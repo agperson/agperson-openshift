@@ -1,0 +1,9 @@
+--- # all-in-one
+summary: Complete OpenStack Origin on a single instance
+description: >
+  Run broker, broker support, and node services on a single Fedora 19 instance.
+  Puppet run is local using Nepho hooks with no Puppetmaster. No monitoring or
+  external DNS.
+provider: aws
+parameters:
+  InstanceType: m1.large

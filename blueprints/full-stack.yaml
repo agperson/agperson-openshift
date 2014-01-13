@@ -1,0 +1,10 @@
+--- # full-stack
+summary: A full production-ready OpenShift stack
+description: >
+  Spins up a Puppetmaster and uses them to manage a monitoring server, brokers,
+  broker support services, and nodes.  Minimum of 7 instances (1 Puppetmaster,
+  1 Zabbix, 3 Broker/support, 2 Nodes) and an ELB.
+provider: aws
+parameters:
+  MgmtInstanceType: m1.medium
+  NodeInstanceType: m1.large
