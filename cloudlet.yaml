@@ -1,13 +1,14 @@
 --- # agperson-openshift
 version: 1.0.0
 format: 1
-source: https://github.com:agperson/agperson-openshift.git
+source: https://github.com:agperson/nepho-openshift.git
 author: Daniel Silverman
 license: MIT
 summary: Deploy an OpenShift Origin stack in AWS
 description: >
-  Deploy a complete OpenShift Origin stack in AWS on Fedora 19 instances. Provisioning
-  and management via Puppetmaster, monitoring with Zabbix, Route53 for DNS.
-projectpage: http://github.com/huit/nepho
+  Deploy a complete OpenShift Origin stack in AWS on Fedora 19 instances using
+  the official OpenShift Puppet module for setup and management. Route53 is used
+  for DNS and a Zabbix server provides instance monitoring.
+projectpage: https://www.openshift.com/
 parameters:
   AWSRegion: us-east-1
