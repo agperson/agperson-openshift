@@ -13,7 +13,6 @@ n_log_dir=${NEPHO_NephoLogDir-"/var/log/nepho"}
 puppet_dir="${n_payload_dir}/puppet"
 now="$(date '+%F_%T')"
 
-mkdir -p ${n_log_dir}
 echo "Beginning run at ${now}" >> ${n_log_dir}/${prog}.log
 
 # Language bug with Facter on F19 (Facter < 1.7)

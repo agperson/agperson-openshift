@@ -25,6 +25,17 @@ function message() {
 function setup_puppet() {
   message info "Installing Puppet"
   yum install -y puppet facter hiera
+
+  if [[ ! -f /etc/puppet/hiera.yaml && -f /etc/hiera.yaml ]]; then
+    message info "Symlinking hiera config into /etc/puppet"
+    ln -s /etc/hiera.yaml /etc/puppet/hiera.yaml
+  fi
+
+  # Symlink hieradata into facter
+  message info "Setting up facter with hiera data"
+  mkdir -p /etc/facter/facts.d
+  touch /var/lib/hiera/defaults.yaml
+  ln -s /var/lib/hiera/defaults.yaml /etc/facter/facts.d/hiera-defaults.yaml
 }
 
 function install_packages() {
@@ -40,22 +51,12 @@ function install_packages() {
 }
 
 function populate_hiera() {
-  if [[ ! -f /etc/puppet/hiera.yaml && -f /etc/hiera.yaml ]]; then
-    message info "Symlinking hiera config into /etc/puppet"
-    ln -s /etc/hiera.yaml /etc/puppet/hiera.yaml
-  fi
-
   # Populate data from NEPHO_ environment variables
   if [[ ! -s '/var/lib/hiera/defaults.yaml' ]]; then
     message info "Populating hiera data from environment variables"
     ruby -e "require 'yaml'" -e \
       "print Hash[ENV.select { |k,v| k =~ /^NEPHO_/ }.map { |i| [ i.first, i.last] } ].to_yaml" \
       > /var/lib/hiera/defaults.yaml
-
-    # Symlink hieradata into facter
-    message info "Setting up facter with hiera data"
-    mkdir -p /etc/facter/facts.d
-    ln -s /var/lib/hiera/defaults.yaml /etc/facter/facts.d/hiera-defaults.yaml
   else
     message info "Hiera data already present, skipping"
   fi
@@ -67,13 +68,12 @@ cd $(dirname "${0}")
 # Make sure that this script has not already run successfully
 if [[ -f /.nepho-bootstrap ]]; then
   message fail "Bootstrap has already run on this instance."
-  exit 0
+else
+  setup_puppet
+  install_packages
+  date > /.nepho-bootstrap
 fi
 
-setup_puppet
-install_packages
 populate_hiera
-
-date > /.nepho-bootstrap
 
 # vim: set ft=sh ts=2 sw=2 ei:
