@@ -6,14 +6,20 @@
 prog="configure"
 
 set -e
-PATH=/bin:/usr/bin:/sbin:/usr/sbin
+PATH=/bin:/usr/bin:/usr/local/bin:/sbin:/usr/sbin:/usr/local/sbin
 
 n_payload_dir=${NEPHO_NephoPayloadDir-"/var/lib/nepho"}
 n_log_dir=${NEPHO_NephoLogDir-"/var/log/nepho"}
 puppet_dir="${n_payload_dir}/puppet"
 now="$(date '+%F_%T')"
 
+mkdir -p ${n_log_dir}
 echo "Beginning run at ${now}" >> ${n_log_dir}/${prog}.log
+
+# Language bug with Facter on F19 (Facter < 1.7)
+export LANGUAGE=en_US.UTF-8
+export LANG=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
 
 # Pretty print informational and error messages
 function message() {
