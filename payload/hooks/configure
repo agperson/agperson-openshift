@@ -57,7 +57,8 @@ function run_puppet() {
 # Make sure we are in the directory of this script
 cd $(dirname "${0}")
 
-run_librarian
+# Temporary disable for debugging
+#run_librarian
 message info "Beginning first Puppet run"
 run_puppet
 message info "Beginning second Puppet run"
