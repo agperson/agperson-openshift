@@ -7,4 +7,3 @@ description: >
 provider: aws
 parameters:
   InstanceType: m1.large
-  InstanceAMI: ami-ed516184

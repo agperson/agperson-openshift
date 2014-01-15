@@ -63,4 +63,6 @@ run_puppet
 message info "Beginning second Puppet run"
 run_puppet
 
+message info "Run complete"
+
 # vim: set ft=sh ts=2 sw=2 ei:

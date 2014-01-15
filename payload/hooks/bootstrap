@@ -38,7 +38,7 @@ function setup_puppet() {
   ln -s /var/lib/hiera/defaults.yaml /etc/facter/facts.d/hiera-defaults.yaml
 
   # Fix an error in F19 packaged version of Hiera's default config file
-  sed 's/- %{\(.*\)}/- "%{\1}"/' /etc/hiera.yaml
+  sed -i 's/- %{\(.*\)}/- "%{\1}"/' /etc/hiera.yaml
 }
 
 function install_packages() {
@@ -78,5 +78,7 @@ else
 fi
 
 populate_hiera
+
+message info "Run complete"
 
 # vim: set ft=sh ts=2 sw=2 ei:

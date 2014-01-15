@@ -13,11 +13,14 @@
     },
 
     "InstanceType":       { "Type": "String", "Default": "m1.large" },
-    "InstanceAMI":        { "Type": "String", "Default": "ami-ed516184" },
     "PayloadURL":         { "Type": "String" },
     "AWSAccessKeyID":     { "Type": "String" },
     "AWSSecretAccessKey": { "Type": "String", "NoEcho": "True" },
     "AWSRegion":          { "Type": "String" }
+  },
+
+  "Mappings": {
+    {% include 'Mappings/Instance-Fedora.json' %}
   },
 
   "Resources" : {
@@ -38,7 +41,7 @@
               "1-bootstrap": {
                 "command": "/var/lib/nepho/hooks/bootstrap",
                 "test": "test -e /var/lib/nepho/hooks/bootstrap",
-                "ignoreErrors": "true"
+                "ignoreErrors": "false"
               },
               "2-configure": {
                 "command": "/var/lib/nepho/hooks/configure",
@@ -57,9 +60,19 @@
       "Properties" : {
         "SecurityGroups": [ { "Ref": "InstanceSecurityGroup" } ],
         "KeyName": { "Ref": "KeyName" },
-        "ImageId": { "Ref": "InstanceAMI" },
+        "InstanceType": { "Ref": "InstanceType" },
+        "ImageId": {
+            "Fn::FindInMap": [
+                "Fedora19Ebs",
+                { "Ref": "AWS::Region" },
+                "64"
+            ]
+        },
         "Tags": [
             { "Key": "Name", "Value": "OpenShift All-In-One" }
+        ],
+        "BlockDeviceMappings": [
+            { "DeviceName": "/dev/sda1", "Ebs": { "VolumeSize": "32" } }
         ],
 
         "UserData": { "Fn::Base64" : { "Fn::Join" : ["", [
