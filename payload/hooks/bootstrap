@@ -7,7 +7,7 @@ export TMPDIR=/var/tmp
 
 n_payload_dir=${NEPHO_NephoPayloadDir-"/var/lib/nepho"}
 n_log_dir=${NEPHO_NephoLogDir-"/var/log/nepho"}
-update_pkgs=${NEPHO_UpdatePackages-"False"}
+update_pkgs=${NEPHO_UpdatePackages-"True"}
 
 mkdir -p ${n_log_dir}
 log="${n_log_dir}/${prog}.log"

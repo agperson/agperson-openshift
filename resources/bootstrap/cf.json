@@ -117,9 +117,9 @@
   },
 
   "Outputs" : {
-    "BootstrappedAMI" : {
-      "Description" : "ID of the bootstrapped AMI",
-      "Value" : { "Fn::Join" : [ "", ["http://", { "Fn::GetAtt" : ["BootstrapInstance", "PublicIp"] }]]}
+    "Message" : {
+      "Description" : "Information about the bootstrapping process",
+      "Value" : "Bootstrapping process complete. A new AMI has been created, check the AWS Console to find it's name. You can (and should) now delete this stack. The AMI will not be deleted."
     }
   }
 
