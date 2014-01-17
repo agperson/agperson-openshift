@@ -2,15 +2,15 @@
 prog="bootstrap"
 
 set -e
-PATH=/bin:/usr/bin:/sbin:/usr/sbin
+source /etc/profile
+source /etc/bashrc
 
 n_payload_dir=${NEPHO_NephoPayloadDir-"/var/lib/nepho"}
 n_log_dir=${NEPHO_NephoLogDir-"/var/log/nepho"}
-update_pkgs=${NEPHO_UpdatePackages-"False"}
-now="$(date '+%F %T')"
+update_pkgs=${NEPHO_UpdatePackages-"True"}
 
 mkdir -p ${n_log_dir}
-echo "Beginning run at ${now}" >> ${n_log_dir}/${prog}.log
+log="${n_log_dir}/${prog}.log"
 
 # Pretty print informational and error messages
 function message() {
@@ -19,12 +19,20 @@ function message() {
     info ) echo -e "\n\033[0m${prog}: \033[1;34m${2}\033[0m" ;;
   esac
 
-  echo "${2}" >> ${n_log_dir}/${prog}.log
+  echo "  [${1}] ${2}" >> ${n_log_dir}/${prog}.log
+}
+
+function update_packages() {
+  if [[ $update_pkgs == "True" ]]; then
+    # Update all local packages
+    message info "Updating packages (this may take a while)"
+    yum -y -q update >>"$log" 2>&1
+  fi
 }
 
 function setup_puppet() {
   message info "Installing Puppet"
-  yum install -y puppet facter hiera
+  yum install -y puppet facter hiera >>"$log" 2>&1
 
   if [[ ! -f /etc/puppet/hiera.yaml && -f /etc/hiera.yaml ]]; then
     message info "Symlinking hiera config into /etc/puppet"
@@ -41,16 +49,17 @@ function setup_puppet() {
   sed -i 's/- %{\(.*\)}/- "%{\1}"/' /etc/hiera.yaml
 }
 
-function install_packages() {
-  if [[ $update_pkgs == "True" ]]; then
-    # Update all local packages
-    message info "Updating packages (this may take a while)"
-    yum -y -q update
-  fi
+function install_prereqs() {
+  message info "Installing prerequisites"
+  puppet resource package git              ensure=installed >>"$log" 2>&1
+  puppet resource package python-pip       ensure=installed >>"$log" 2>&1
+  puppet resource package awscli           ensure=installed provider=pip >>"$log" 2>&1
+  puppet resource package librarian-puppet ensure=installed provider=gem >>"$log" 2>&1
 
-  message info "Installing packages"
-  puppet resource package git ensure=installed >/dev/null
-  puppet resource package librarian-puppet ensure=installed provider=gem >/dev/null
+  # Nice-to-haves
+  puppet resource package vim-enhanced ensure=installed >>"$log" 2>&1
+  puppet resource package tmux         ensure=installed >>"$log" 2>&1
+  puppet resource package elinks       ensure=installed >>"$log" 2>&1
 }
 
 function populate_hiera() {
@@ -68,17 +77,20 @@ function populate_hiera() {
 # Make sure we are in the directory of this script
 cd $(dirname "${0}")
 
+message info "Beginning run at $(date '+%F %T')"
+
 # Make sure that this script has not already run successfully
 if [[ -f /.nepho-bootstrap ]]; then
   message fail "Bootstrap has already run on this instance."
 else
+  update_packages
   setup_puppet
-  install_packages
+  install_prereqs
   date > /.nepho-bootstrap
 fi
 
 populate_hiera
 
-message info "Run complete"
+message info "Run complete at $(date '+%F %T')"
 
 # vim: set ft=sh ts=2 sw=2 ei:

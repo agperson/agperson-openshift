@@ -1,0 +1,10 @@
+--- # all-in-one
+summary: Bootstrap a Fedora 19 image and create an AMI
+description: >
+  Run this blueprint first to create a Fedora 19 AMI in your region that is
+  pre-bootstrapped with Puppet. Pass the AMI ID to the all-in-one and full-
+  stack blueprints.
+provider: aws
+parameters:
+  InstanceType: m1.small
+  AWSRegion: us-east-1
