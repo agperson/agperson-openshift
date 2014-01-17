@@ -6,7 +6,8 @@
 prog="configure"
 
 set -e
-PATH=/bin:/usr/bin:/usr/local/bin:/sbin:/usr/sbin:/usr/local/sbin
+export PATH=/bin:/usr/bin:/usr/local/bin:/sbin:/usr/sbin:/usr/local/sbin
+export TMPDIR=/var/tmp
 
 n_payload_dir=${NEPHO_NephoPayloadDir-"/var/lib/nepho"}
 n_log_dir=${NEPHO_NephoLogDir-"/var/log/nepho"}

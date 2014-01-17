@@ -2,12 +2,12 @@
 prog="bootstrap"
 
 set -e
-source /etc/profile
-source /etc/bashrc
+export PATH=/bin:/usr/bin:/usr/local/bin:/sbin:/usr/sbin:/usr/local/sbin
+export TMPDIR=/var/tmp
 
 n_payload_dir=${NEPHO_NephoPayloadDir-"/var/lib/nepho"}
 n_log_dir=${NEPHO_NephoLogDir-"/var/log/nepho"}
-update_pkgs=${NEPHO_UpdatePackages-"True"}
+update_pkgs=${NEPHO_UpdatePackages-"False"}
 
 mkdir -p ${n_log_dir}
 log="${n_log_dir}/${prog}.log"
@@ -40,10 +40,12 @@ function setup_puppet() {
   fi
 
   # Symlink hieradata into facter
-  message info "Setting up facter with hiera data"
-  mkdir -p /etc/facter/facts.d
-  touch /var/lib/hiera/defaults.yaml
-  ln -s /var/lib/hiera/defaults.yaml /etc/facter/facts.d/hiera-defaults.yaml
+  if [[ ! -f /etc/facter/facts.d/hiera-defaults.yaml ]]; then
+    message info "Setting up facter with hiera data"
+    mkdir -p /etc/facter/facts.d
+    touch /var/lib/hiera/defaults.yaml
+    ln -s /var/lib/hiera/defaults.yaml /etc/facter/facts.d/hiera-defaults.yaml
+  fi
 
   # Fix an error in F19 packaged version of Hiera's default config file
   sed -i 's/- %{\(.*\)}/- "%{\1}"/' /etc/hiera.yaml

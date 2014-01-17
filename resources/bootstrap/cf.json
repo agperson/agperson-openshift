@@ -35,20 +35,26 @@
               "/var/lib/nepho" : {"Ref": "PayloadURL"}
             },
             "commands": {
-              "0-set-permissions": {
+              "0-disable-selinux": {
+                "command": "setenforce 0"
+              },
+              "1-set-permissions": {
                 "command": "chmod +x hooks/*",
                 "cwd": "/var/lib/nepho",
                 "ignoreErrors": "true"
               },
-              "1-bootstrap": {
+              "2-bootstrap": {
                 "command": "/var/lib/nepho/hooks/bootstrap",
                 "test": "test -e /var/lib/nepho/hooks/bootstrap",
                 "ignoreErrors": "false"
               },
-              "2-create-image": {
-                "command": "aws ec2 create-image --instance-id $(curl -fs http://169.254.169.254/latest/meta-data/instance-id) --name \"OpenShift Fedora 19\" --no-reboot",
+              "3-enable-selinux": {
+                "command": "setenforce 1"
+              },
+              "4-create-image": {
+                "command": "aws ec2 create-image --instance-id \"$(curl -fs http://169.254.169.254/latest/meta-data/instance-id)\" --name \"OpenShift Fedora 19\" --no-reboot > /var/log/nepho/create-image.log",
                 "env": {
-                    "AWS_REGION": { "Ref": "AWS::Region" ),
+                    "AWS_DEFAULT_REGION": { "Ref": "AWS::Region" },
                     "AWS_ACCESS_KEY_ID": { "Ref": "AWSAccessKeyID" },
                     "AWS_SECRET_ACCESS_KEY": { "Ref": "AWSSecretAccessKey" }
                 },
@@ -95,7 +101,7 @@
       "DependsOn" : "BootstrapInstance",
       "Properties" : {
         "Handle" : {"Ref" : "WaitHandle"},
-        "Timeout" : "900"
+        "Timeout" : "600"
       }
     },
 
