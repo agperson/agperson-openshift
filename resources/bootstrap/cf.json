@@ -101,7 +101,7 @@
       "DependsOn" : "BootstrapInstance",
       "Properties" : {
         "Handle" : {"Ref" : "WaitHandle"},
-        "Timeout" : "600"
+        "Timeout" : "900"
       }
     },
 
