@@ -1,0 +1,11 @@
+--- # vagrant-all-in-one
+summary: Complete OpenStack Origin on a single instance
+description: >
+  Run broker, broker support, and node services on a single Fedora 19 instance.
+  Puppet run is local using Nepho hooks with no Puppetmaster. AVAHI for DNS.
+provider: vagrant
+parameters:
+  UpdatePackages: False
+  SetupPuppet: False
+  BoxName: fedora-19-x64-puppet
+  BoxUrl: "https://dl.dropboxusercontent.com/u/86066173/fedora-19.box"
