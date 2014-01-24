@@ -7,3 +7,6 @@ description: >
 provider: aws
 parameters:
   InstanceType: m1.large
+  Role: all-in-one
+  Environment: development
+  BootstrappedImageId:
