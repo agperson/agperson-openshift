@@ -76,9 +76,10 @@
             ]
         },
         "Tags": [
-            { "Key": "Name",     "Value": "OpenShift All-In-One" },
-            { "Key": "Owner ID", "Value": { "Ref": "OwnerId" } },
-            { "Key": "Owner",    "Value": { "Ref": "OwnerName" } }
+            { "Key": "Name", "Value": "OpenShift Fedora 19" },
+            { "Key": "NephoBaseAmiMapping", "Value": "Fedora19Ebs" },
+            { "Key": "OwnerId", "Value": { "Ref": "OwnerId" } },
+            { "Key": "OwnerName", "Value": { "Ref": "OwnerName" } }
         ],
         "UserData": { "Fn::Base64" : { "Fn::Join" : ["", [
           "#!/bin/bash\n",
