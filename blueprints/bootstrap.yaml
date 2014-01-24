@@ -6,5 +6,7 @@ description: >
   stack blueprints.
 provider: aws
 parameters:
-  InstanceType: m1.small
   AWSRegion: us-east-1
+  InstanceType: m1.small
+  UpdatePackages: True
+  SetupPuppet: True

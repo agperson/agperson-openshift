@@ -11,4 +11,5 @@ description: >
   for DNS and a Zabbix server provides instance monitoring.
 projectpage: https://www.openshift.com/
 parameters:
-  AWSRegion: us-east-1
+  NephoPayloadDir: /var/lib/nepho
+  NephoLogDir: /var/log/nepho

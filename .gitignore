@@ -1,3 +1,4 @@
 .project
 .vagrant
 .ruby-version
+.DS_Store

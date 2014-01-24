@@ -1,25 +1,51 @@
 {
   "AWSTemplateFormatVersion" : "2010-09-09",
-  "Description" : "All-in-one OpenShift Origin",
+  "Description" : "Simple Instance",
 
   "Parameters" : {
     "KeyName":             { "Type": "String" },
-    "InstanceType":        { "Type": "String", "Default": "m1.large" },
+    "InstanceType":        { "Type": "String" },
     "PayloadURL":          { "Type": "String" },
     "OwnerId":             { "Type": "String" },
     "OwnerName":           { "Type": "String" },
     "NephoPayloadDir":     { "Type": "String" },
     "NephoLogDir":         { "Type": "String" },
-    "Role":                { "Type": "String" },
-    "Environment":         { "Type": "String" },
     "AWSAccessKeyID":      { "Type": "String" },
     "AWSSecretAccessKey":  { "Type": "String", "NoEcho": "True" },
-    "AWSRegion":           { "Type": "String" },
-    "BootstrappedImageId": { "Type": "String" }
+    "AWSRegion":           { "Type": "String" }
+  },
+
+  "Mappings": {
+    "AmazonLinux201309Ebs": {
+      "ap-northeast-1": {
+        "32": "ami-97fe9b96", "64": "ami-b1fe9bb0"
+      },
+      "ap-southeast-1": {
+        "32": "ami-5896c30a", "64": "ami-4296c310"
+      },
+      "ap-southeast-2": {
+        "32": "ami-017be73b", "64": "ami-717be74b"
+      },
+      "eu-west-1": {
+        "32": "ami-efec0e98", "64": "ami-c7ec0eb0"
+      },
+      "sa-east-1": {
+        "32": "ami-3f79df22", "64": "ami-8779df9a"
+      },
+      "us-east-1": {
+        "32": "ami-cde4bca4", "64": "ami-83e4bcea"
+      },
+      "us-west-1": {
+        "32": "ami-fa1f29bf", "64": "ami-981f29dd"
+      },
+      "us-west-2": {
+        "32": "ami-4c1c847c", "64": "ami-be1c848e"
+      }
+    }
   },
 
   "Resources" : {
-    "OOInstance" : {
+    "Ec2Instance" : {
       "Type" : "AWS::EC2::Instance",
       "Metadata" : {
         "AWS::CloudFormation::Init" : {
@@ -41,12 +67,12 @@
               "2-configure": {
                 "command": "/var/lib/nepho/hooks/configure",
                 "test": "test -e /var/lib/nepho/hooks/configure",
-                "ignoreErrors": "true"
+                "ignoreErrors": "false"
               },
               "3-deploy": {
                 "command": "/var/lib/nepho/hooks/deploy",
                 "test": "test -e /var/lib/nepho/hooks/deploy",
-                "ignoreErrors": "true"
+                "ignoreErrors": "false"
               }
             }
           }
@@ -56,32 +82,38 @@
         "SecurityGroups": [ { "Ref": "InstanceSecurityGroup" } ],
         "KeyName": { "Ref": "KeyName" },
         "InstanceType": { "Ref": "InstanceType" },
-        "ImageId": { "Ref": "BootstrappedImageId" },
+        "ImageId": { "Ref": "ImageId" },
+        "ImageId": { "Fn::FindInMap": [
+          "AmazonLinux201309Ebs", { "Ref": "AWS::Region" }, "64"
+        ] },
         "Tags": [
-            { "Key": "Name", "Value": "OpenShift All-In-One" },
-            { "Key": "Role", "Value": { "Ref": "Role" } },
-            { "Key": "Environment", "Value": { "Ref": "Environment" } },
-            { "Key": "OwnerId", "Value": { "Ref": "OwnerId" } },
-            { "Key": "OwnerName", "Value": { "Ref": "OwnerName" } }
+          { "Key": "Name", "Value": { "Fn::Join": [
+            "-", [ { "Ref": "OwnerName" }, "aws-simple" ]
+          ] } },
+          { "Key": "OwnerId", "Value": { "Ref": "OwnerId" } },
+          { "Key": "OwnerName", "Value": { "Ref": "OwnerName" } }
         ],
-        "BlockDeviceMappings": [
-            { "DeviceName": "/dev/sda1", "Ebs": { "VolumeSize": "32" } }
-        ],
-
         "UserData": { "Fn::Base64" : { "Fn::Join" : ["", [
           "#!/bin/bash\n",
-          "easy_install https://s3.amazonaws.com/cloudformation-examples/aws-cfn-bootstrap-latest.tar.gz\n",
+          "PATH=\"$PATH:/opt/aws/bin\"\n",
           {%- for k, v in env_vars().items() %}
           "export NEPHO_{{k}}=\"{{v}}\"\n",
           {%- endfor %}
           "cfn-init -v",
             " --stack ", { "Ref" : "AWS::StackId" },
-            " --resource OOInstance",
+            " --resource Ec2Instance",
             " --region ", { "Ref" : "AWS::Region" }, "\n",
           "cfn-signal",
             " --exit-code=$?",
             " \"", { "Ref" : "WaitHandle" }, "\"\n"
         ]]}}
+      }
+    },
+
+    "MyEIP": {
+      "Type": "AWS::EC2::EIP",
+      "Properties": {
+        "InstanceId": { "Ref": "Ec2Instance" }
       }
     },
 
@@ -91,31 +123,33 @@
 
     "WaitCondition" : {
       "Type" : "AWS::CloudFormation::WaitCondition",
-      "DependsOn" : "OOInstance",
+      "DependsOn" : "Ec2Instance",
       "Properties" : {
         "Handle" : {"Ref" : "WaitHandle"},
-        "Timeout" : "300"
+        "Timeout" : "900"
       }
     },
 
     "InstanceSecurityGroup" : {
       "Type" : "AWS::EC2::SecurityGroup",
       "Properties" : {
-        "GroupDescription" : "Enable SSH access and HTTP/HTTPS access on the inbound port",
+        "GroupDescription" : "Enable SSH access and HTTP access on the inbound port",
         "SecurityGroupIngress": [
           { "IpProtocol" : "tcp", "FromPort" : "22", "ToPort" : "22", "CidrIp" : "0.0.0.0/0"},
-          { "IpProtocol" : "tcp", "FromPort" : "80", "ToPort" : "80", "CidrIp" : "0.0.0.0/0"},
-          { "IpProtocol" : "tcp", "FromPort" : "443", "ToPort" : "443", "CidrIp" : "0.0.0.0/0"}
+          { "IpProtocol" : "tcp", "FromPort" : "80", "ToPort" : "80", "CidrIp" : "0.0.0.0/0"}
         ]
       }
     }
   },
 
   "Outputs" : {
-    "URL" : {
-      "Description" : "URL of all-in-one instance",
-      "Value" : { "Fn::Join" : [ "", ["http://", { "Fn::GetAtt" : [ "OOInstance", "PublicDnsName" ] }]]}
+    "InstanceId" : {
+      "Value" : { "Ref" : "Ec2Instance" },
+      "Description" : "Instance ID of newly created instance"
+    },
+    "PublicIp": {
+      "Value": { "Ref": "MyEIP" },
+      "Description": "Elastic IP of newly created instance"
     }
   }
-
 }

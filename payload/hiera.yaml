@@ -1,0 +1,12 @@
+---
+:backends:
+  - yaml
+:hierarchy:
+  - defaults
+  - "role/%{nepho_role}"
+  - common
+
+:logger: console
+
+:yaml:
+  :datadir: "/var/lib/nepho/hiera"

@@ -1,13 +1,14 @@
 node default {
-  class { 'openshift_origin' :
-    domain                     => 'example.com',
-    node_unmanaged_users       => ['root'],
-    development_mode           => true,
-    conf_node_external_eth_dev => 'eth0',
-    install_login_shell        => true,
-    install_method             => 'yum',
-    register_host_with_named   => true,
-    broker_auth_plugin         => 'mongo',
-    broker_dns_plugin          => 'avahi',
+  # Setup pre and post run stages
+  stage { ['pre', 'post']: }
+  Stage['pre'] -> Stage['main'] -> Stage['post']
+
+  # Apply role from fact or hieradata
+  if $::nepho_role == undef {
+    notice('Applying default role')
+    include ::role
+  } else {
+    notice("Applying role ${::nepho_role}")
+    include "::role::${::nepho_role}"
   }
 }
