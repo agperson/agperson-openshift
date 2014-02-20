@@ -3,14 +3,18 @@
   "Description" : "All-in-one OpenShift Origin",
 
   "Parameters" : {
-    "KeyName":            { "Type": "String" },
-    "InstanceType":       { "Type": "String", "Default": "m1.small" },
-    "PayloadURL":         { "Type": "String" },
-    "OwnerId":            { "Type": "String" },
-    "OwnerName":          { "Type": "String" },
-    "AWSAccessKeyID":     { "Type": "String" },
-    "AWSSecretAccessKey": { "Type": "String", "NoEcho": "True" },
-    "AWSRegion":          { "Type": "String" }
+    "KeyName":             { "Type": "String" },
+    "InstanceType":        { "Type": "String", "Default": "m1.large" },
+    "PayloadURL":          { "Type": "String" },
+    "OwnerId":             { "Type": "String" },
+    "OwnerName":           { "Type": "String" },
+    "NephoPayloadDir":     { "Type": "String" },
+    "NephoLogDir":         { "Type": "String" },
+    "UpdatePackages":      { "Type": "String" },
+    "SetupPuppet":         { "Type": "String" },
+    "AWSAccessKeyID":      { "Type": "String" },
+    "AWSSecretAccessKey":  { "Type": "String", "NoEcho": "True" },
+    "AWSRegion":           { "Type": "String" }
   },
 
   "Mappings": {
