@@ -1,3 +1,3 @@
 class profile::base {
-  include ::base
+  class { '::base': stage => 'pre' }
 }

@@ -32,14 +32,19 @@ class profile::all-in-one {
     install_method             => 'yum',
     jenkins_repo_base          => 'http://pkg.jenkins-ci.org/redhat',
 
-    #Enable development mode for more verbose logs
+    # Enable development mode for more verbose logs
     development_mode           => true,
-    install_login_shell        => true,
+    install_login_shell        => false,
 
     # Set if using an external-facing ethernet device other than eth0
-    #conf_node_external_eth_dev => 'eth0',
+    conf_node_external_eth_dev => 'eth0',
 
-    #If using with GDM, or have users with UID 500 or greater, put in this list
-    #node_unmanaged_users       => ['user1'],
+    # If using with GDM, or have users with UID 500 or greater, put in this list
+    #node_unmanaged_users => ['user1'],
+    install_cartridges    => [ 'cron', 'diy' ],
+
+    # Not being set bug
+    node_shmmax           => 68719476736,
+    node_shmall           => 4294967296,
   }
 }

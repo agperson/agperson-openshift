@@ -58,6 +58,13 @@ function setup_hiera() {
   fi
 }
 
+function setup_facter() {
+  # Enable ec2_* facts in VPC environments
+  # See: http://projects.puppetlabs.com/issues/7559
+  message info "Enabling EC2 facts for VPCs"
+  curl https://gist.github.com/agperson/8696051/raw/10bf5c3e5e6452c82dc6edc03ebad22be283f906/ec2_vpc.rb > $(ruby -e 'puts $LOAD_PATH.first')/facter/ec2_vpc.rb
+}
+
 function populate_facter() {
   # Populate data from NEPHO_ environment variables
   message info "Populating facter data from environment variables"
@@ -77,6 +84,7 @@ else
   [[ "${update_pkgs}" != "False" ]] && update_packages
   [[ "${setup_puppet}" != "False" ]] && setup_puppet
   setup_hiera
+  setup_facter
   install_prereqs
   date > /.nepho-bootstrap
 fi

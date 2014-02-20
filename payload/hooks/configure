@@ -62,10 +62,9 @@ cd $(dirname "${0}")
 message info "Beginning run at $(date '+%F %T')"
 
 run_librarian
-message info "Beginning first Puppet run"
+message info "Beginning Puppet run"
 run_puppet
-message info "Beginning second Puppet run"
-run_puppet
+message info "Finished Puppet run"
 
 message info "Run complete at $(date '+%F %T')"
 

@@ -1,4 +1,8 @@
 class base {
-  $pkgs = [ 'git', 'tmux', 'vim-enhanced', 'elinks', 'htop' ]
-  package { $pkgs: ensure => installed }
+  # Nice to have
+  package { ['tmux', 'elinks', 'htop']: }
+
+  # OpenShift Origin Dependencies
+  package { 'NetworkManager': }
+  package { 'augeas': }
 }

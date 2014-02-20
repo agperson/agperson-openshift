@@ -9,4 +9,4 @@
 :logger: console
 
 :yaml:
-  :datadir: "/var/lib/nepho/hiera"
+  :datadir: "/var/lib/nepho/hieradata"

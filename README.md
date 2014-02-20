@@ -5,7 +5,7 @@ This is a cloudlet for [nepho](http://github.com/huit/nepho) that deploys OpenSh
 
 Included Blueprints
 -------------------
-**aws-bootstrap**
+**bootstrap**
 This blueprint spins up a single Fedora 19 instance, runs the bootstrap sequence, and then executes a command to generate an AMI from the resulting state.  It outputs an explanation message and the newly created AMI's ImageID. This only needs to be run once, then the AMI set as a parameter. If a custom AMI already exists with the same name, this blueprint will fail.
 
 **all-in-one**
