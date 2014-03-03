@@ -9,23 +9,12 @@ Vagrant.configure('2') do |config|
 
   config.vm.hostname = '{{ parameters.Role }}.local'
 
-  # Assign a static private IP (198.18.0.0/15 will never be routed)
-  config.vm.network :private_network, ip: '{{ parameters.VagrantStaticIp|default("172.16.20.2") }}'
+  # Assign a static private IP (172.16.0.0/12 will never be routed)
+  config.vm.network :private_network, ip: '{{ parameters.VagrantStaticIp|default("172.16.10.10") }}'
 
   # Set default RAM for VirtualBox
   config.vm.provider :virtualbox do |vbox|
     vbox.customize ['modifyvm', :id, '--memory', '1024']
-  end
-
-  # If the hostsupdater plugin is installed, configure the local hosts file to
-  # point aliases to the instance as well as the hostname.
-  #
-  # Install: vagrant plugin install vagrant-hostsupdater
-  # Source:  https://github.com/cogitatio/vagrant-hostsupdater
-  if defined? VagrantPlugins::HostsUpdater
-    config.hostsupdater.aliases = [ "cas.local" ]
-  else
-    print "Plugin vagrant-hostsupdater is not installed, not updating hosts file!"
   end
 
   # Mount a shared folder containing the cloudlet's data files
