@@ -160,9 +160,15 @@
   },
 
   "Outputs" : {
-    "URL" : {
-      "Description" : "URL of all-in-one instance",
-      "Value" : { "Fn::Join" : [ "", ["http://", { "Fn::GetAtt" : [ "OOInstance", "PublicDnsName" ] }]]}
+    "SSHEndpoint": {
+      "Value": { "Fn::GetAtt": [ "OOInstance", "PublicDnsName" ] }
+    },
+    "SSHUser": {
+      "Value": "fedora"
+    },
+    "URL": {
+      "Description": "URL of all-in-one instance",
+      "Value": { "Fn::Join" : [ "", ["https://", { "Fn::GetAtt" : [ "OOInstance", "PublicDnsName" ] }, "/console/" ]]}
     }
   }
 
