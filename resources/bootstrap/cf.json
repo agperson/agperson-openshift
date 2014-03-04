@@ -6,8 +6,6 @@
     "KeyName":             { "Type": "String" },
     "InstanceType":        { "Type": "String", "Default": "m1.large" },
     "PayloadURL":          { "Type": "String" },
-    "OwnerId":             { "Type": "String" },
-    "OwnerName":           { "Type": "String" },
     "NephoPayloadDir":     { "Type": "String" },
     "NephoLogDir":         { "Type": "String" },
     "UpdatePackages":      { "Type": "String" },
@@ -74,8 +72,6 @@
         "Tags": [
             { "Key": "Name", "Value": "OpenShift Fedora 19" },
             { "Key": "NephoBaseAmiMapping", "Value": "Fedora19Ebs" },
-            { "Key": "OwnerId", "Value": { "Ref": "OwnerId" } },
-            { "Key": "OwnerName", "Value": { "Ref": "OwnerName" } }
         ],
         "UserData": { "Fn::Base64" : { "Fn::Join" : ["", [
           "#!/bin/bash\n",

@@ -41,7 +41,7 @@ class profile::all-in-one {
 
     # If using with GDM, or have users with UID 500 or greater, put in this list
     #node_unmanaged_users => ['user1'],
-    install_cartridges    => [ 'cron', 'diy' ],
+    install_cartridges    => [ 'cron', 'diy' 'haproxy', 'php', 'python', 'postgresql', 'jenkins', 'mariadb' ],
 
     # Not being set bug
     node_shmmax           => 68719476736,
