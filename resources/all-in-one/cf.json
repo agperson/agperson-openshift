@@ -71,18 +71,9 @@
                     " --stack ", { "Ref" : "AWS::StackId" },
                     " --resource OOInstance",
                     " --region ", { "Ref" : "AWS::Region" },
-                    " --configsets update-config\n",
+                    " --configsets update\n",
                   "runas=root\n"
                 ]]}
-              }
-            },
-            "services": {
-              "sysvinit": {
-                "cfn-hup": {
-                  "enabled": "true",
-                  "ensureRunning": "true",
-                  "files": [ "/etc/cfn/cfn-hup.conf", "/etc/cfn/hooks.d/cfn-auto-reloader.conf" ]
-                }
               }
             }
           },
@@ -134,7 +125,7 @@
             " --stack ", { "Ref" : "AWS::StackId" },
             " --resource OOInstance",
             " --region ", { "Ref" : "AWS::Region" },
-            " --configsets create-config\n",
+            " --configsets create\n",
           "cfn-signal",
             " --exit-code=$?",
             " \"", { "Ref" : "WaitHandle" }, "\"\n"

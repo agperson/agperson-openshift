@@ -4,9 +4,6 @@ prog="deploy"
 n_payload_dir=${NEPHO_NephoPayloadDir-"/var/lib/nepho"}
 n_log_dir=${NEPHO_NephoLogDir-"/var/log/nepho"}
 n_role=${NEPHO_Role}
-now="$(date '+%F %T')"
-
-echo "Beginning run at ${now}" >> ${n_log_dir}/${prog}.log
 
 # Pretty print informational and error messages
 function message() {
@@ -18,20 +15,25 @@ function message() {
   echo "${2}" >> ${n_log_dir}/${prog}.log
 }
 
+message info "Beginning run at $(date '+%F %T')"
+
 # Make sure we are in the directory of this script
 cd $(dirname "${0}")
+
+message info "Running cfn-hup daemon"
+cfn-hup
 
 if [[ "$n_role" == "all-in-one" ]]; then
   # Ensure all services are running
   for service in httpd mcollective mongod openshift-broker openshift-console; do
     systemctl status $service >/dev/null 2>&1
     if [[ $? -ne 0 ]]; then
-      echo "Starting service $service"
+      message info "Starting service $service"
       systemctl start $service
     fi
   done
-else
-  message fail "No deployment actions"
 fi
+
+message info "Run complete at $(date '+%F %T')"
 
 exit 0
