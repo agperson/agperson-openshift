@@ -1,3 +1,4 @@
 forge 'http://forge.puppetlabs.com'
 
-mod "openshift/openshift_origin"
+mod "openshift_origin",
+  :git => "https://github.com/openshift/puppet-openshift_origin.git"

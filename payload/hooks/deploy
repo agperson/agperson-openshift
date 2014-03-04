@@ -29,7 +29,7 @@ if [[ "$n_role" == "all-in-one" ]]; then
   # openshift-iptables-port-proxy
   # openshift-node-web-proxy
   # openshift-tc stop/start
-  for service in httpd mcollective mongod oddjobd openshift-broker openshift-console; do
+  for service in activemq httpd mcollective mongod oddjobd openshift-broker openshift-console; do
     systemctl status $service >/dev/null 2>&1
     if [[ $? -ne 0 ]]; then
       message info "Starting service $service"
