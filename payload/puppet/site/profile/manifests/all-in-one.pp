@@ -5,17 +5,17 @@ class profile::all-in-one {
 
     # The FQDNs of the OpenShift component hosts; for a single-host
     # system, make all values identical.
-    broker_hostname            => $::ec2_hostname,
-    node_hostname              => $::ec2_hostname,
-    named_hostname             => $::ec2_hostname,
-    datastore_hostname         => $::ec2_hostname,
-    activemq_hostname          => $::ec2_hostname,
+    broker_hostname            => $::ec2_public_hostname,
+    node_hostname              => $::ec2_public_hostname,
+    named_hostname             => $::ec2_public_hostname,
+    datastore_hostname         => $::ec2_public_hostname,
+    activemq_hostname          => $::ec2_public_hostname,
 
     # BIND / named config
     # This is the key for updating the OpenShift BIND server
     bind_key                   => 'CNk+wjszKi9da9nL/1gkMY7H+GuUng==',
     # The domain under which applications should be created.
-    domain                     => $::ec2_hostname,
+    domain                     => $::ec2_public_hostname,
     # Apps would be named <app>-<namespace>.example.com
     # This also creates hostnames for local components under our domain
     register_host_with_named   => true,
@@ -41,7 +41,7 @@ class profile::all-in-one {
 
     # If using with GDM, or have users with UID 500 or greater, put in this list
     #node_unmanaged_users => ['user1'],
-    install_cartridges    => [ 'cron', 'diy', 'haproxy', 'php', 'python', 'mariadb' ],
+    install_cartridges    => [ 'cron', 'diy' ],
 
     # Not being set bug
     node_shmmax           => 68719476736,
